@@ -1,7 +1,8 @@
 name: 'Build Tauri'
-# This workflow build a Tauri app for all platforms and upload the binaries as artifacts
+# This workflow builds a Tauri app for all platforms and uploads the binaries as artifacts
 
 on:
+  workflow_dispatch:   # <-- THIS SHOWS THE RUN BUTTON
   schedule:
     - cron: '00 00 * * 0'
   push:
@@ -34,7 +35,7 @@ jobs:
           bun-version: latest
 
       - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
+        uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
@@ -47,9 +48,8 @@ jobs:
       - name: Install frontend dependencies
         run: bun install
 
-      - name: Prepare Tauri
-        run: |
-          bun run scripts/append-hash.ts
+      - name: Prepare Tauri (runs your append-hash.ts)
+        run: bun run scripts/append-hash.ts
 
       - uses: tauri-apps/tauri-action@v0
         id: tauri
